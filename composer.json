@@ -1,0 +1,23 @@
+{
+	"autoload" : {
+		"psr-4" : {
+			"Shawware\\CodingChallenge\\" : "src"
+		}
+	},
+	"name" : "shawware/coding-challenge",
+	"type" : "library",
+	"description" : "A framework for PHP coding challenges.",
+	"license" : "GPL-3.0+",
+	"require" : {
+		"php" : ">=5.4"
+	},
+	"authors" : [{
+			"name" : "David Shaw",
+			"email" : "david.shaw@shawware.com.au",
+			"homepage" : "http://www.shawware.com.au"
+		}
+	],
+	"require-dev" : {
+		"phpunit/phpunit" : "4.8.6"
+	}
+}
