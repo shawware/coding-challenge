@@ -24,7 +24,7 @@ class Method
     /**
      * The method's parameters.
      * 
-     * @var array:parameter
+     * @var array:Parameter
      */
     private $parameters;
     /**
