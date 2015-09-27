@@ -7,14 +7,8 @@ use Shawware\CodingChallenge\Util\Validator;
 /**
  * Models a method in the context of a challenge.
  */
-class Method
+class Method extends AbstractEntity
 {
-    /**
-     * The method's name.
-     * 
-     * @var string
-     */
-    private $name;
     /**
      * The method's return type.
      * 
@@ -44,7 +38,7 @@ class Method
      */
     public function __construct($name, $returnType, $parameters, $constraints)
     {
-        Validator::validateString($name, 'name');
+        parent::__construct($name);
         Validator::validateString($returnType, 'return type');
         Validator::validateTypedArray($parameters, 'Shawware\CodingChallenge\Model\Parameter', 'parameters');
         Validator::validateStringArray($constraints, 'constraints');
@@ -53,16 +47,6 @@ class Method
         $this->returnType = $returnType;
         $this->parameters = $parameters;
         $this->constraints = $constraints;
-    }
-
-    /**
-     * This method's name.
-     * 
-     * @return string
-     */
-    public function name()
-    {
-        return $this->name;
     }
 
     /**

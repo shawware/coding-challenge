@@ -3,19 +3,12 @@
 namespace Shawware\CodingChallenge\Model;
 
 use Shawware\CodingChallenge\Util\Validator;
-use Shawware\CodingChallenge\Model\Method;
 
 /**
  * Models a particular challenge (puzzle).
  */
-class Challenge
+class Challenge extends AbstractEntity
 {
-    /**
-     * This challenge's name.
-     * 
-     * @var string
-     */
-    private $name;
     /**
      * This challenge's description.
      * 
@@ -45,7 +38,7 @@ class Challenge
      */
     public function __construct($name, $description, $className, Method $method)
     {
-        Validator::validateString($name, 'name');
+        parent::__construct($name);
         Validator::validateString($description, 'description');
         Validator::validateString($className, 'class name');
         
@@ -53,16 +46,6 @@ class Challenge
         $this->description = $description;
         $this->className = $className;
         $this->method = $method;
-    }
-
-    /**
-     * This challenge's name.
-     * 
-     * @return string
-     */
-    public function name()
-    {
-        return $this->name;
     }
 
     /**

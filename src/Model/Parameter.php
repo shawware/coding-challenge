@@ -7,7 +7,7 @@ use Shawware\CodingChallenge\Util\Validator;
 /**
  * Models a method's parameter in the context of a challenge.
  */
-class Parameter
+class Parameter extends AbstractEntity
 {
     /**
      * Enumerate the scalar types supported by PHP.
@@ -21,12 +21,6 @@ class Parameter
             'string' 
     );
     
-    /**
-     * The parameter's name.
-     * 
-     * @var string
-     */
-    private $name;
     /**
      * The parameter's type.
      * 
@@ -49,23 +43,13 @@ class Parameter
      */
     public function __construct($name, $type, $constraints)
     {
-        Validator::validateString($name, 'name');
+        parent::__construct($name);
         Validator::validateString($type, 'type');
         Validator::validateStringArray($constraints, 'constraints');
         
         $this->name = $name;
         $this->type = $type;
         $this->constraints = $constraints;
-    }
-
-    /**
-     * This parameter's name.
-     * 
-     * @return string
-     */
-    public function name()
-    {
-        return $this->name;
     }
 
     /**
