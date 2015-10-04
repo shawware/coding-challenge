@@ -10,6 +10,7 @@ use Shawware\CodingChallenge\Util\Validator;
 use Shawware\CodingChallenge\Model\Parameter;
 use Shawware\CodingChallenge\Model\Method;
 use Shawware\CodingChallenge\Model\Challenge;
+use Shawware\CodingChallenge\Model\TestCase;
 
 /**
  * Unit Tests for the Model classes.
@@ -341,24 +342,152 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Exercise the Challenge constructor for invalid arguments. @dataProvider challengeFixture
+     * Exercise the TestCase constructor for valid and invalid arguments. @dataProvider testCaseFixture
+     */
+    public function testTestCaseConstruction($isExample, $inputs, $expectedOutput, $explanation, $success, $str = null)
+    {
+        try {
+            $tc = new TestCase($isExample, $inputs, $expectedOutput, $explanation);
+            $this->assertTrue($success, 'Construction succeeded when it should have failed');
+            $this->assertEquals($isExample, $tc->isExample(), 'mis-matched is example');
+            $actualInputs = $tc->inputs();
+            $count = count($inputs);
+            $this->assertCount($count, $actualInputs);
+            for($i = 0; $i < $count; $i++) {
+                $this->assertEquals($inputs [$i], $actualInputs [$i], 'mismatched input: ' . $i);
+            }
+            $this->assertEquals($expectedOutput, $tc->expectedOutput(), 'mis-matched expected output');
+            $this->assertEquals($explanation, $tc->explanation(), 'mis-matched explanation');
+            $this->assertEquals($str, $tc->__toString(), 'mis-matched string representations');
+        }
+        catch (InvalidArgumentException $e) {
+            $this->assertFalse($success, 'Construction failed when it should have succeeded');
+        }
+    }
+
+    /**
+     * The attributes are: is example, inputs, expected output, explanation, success, string representation
+     * 
+     * @return multitype
+     */
+    public function testCaseFixture()
+    {
+        $inputs = array(
+                1,
+                2,
+                3 
+        );
+        $output = 7;
+        $str = '(1, 2, 3) : 7';
+        return array(
+                array(
+                        null,
+                        null,
+                        null,
+                        null,
+                        false 
+                ),
+                array(
+                        false,
+                        null,
+                        null,
+                        null,
+                        false 
+                ),
+                array(
+                        true,
+                        null,
+                        null,
+                        null,
+                        false 
+                ),
+                array(
+                        false,
+                        $inputs,
+                        null,
+                        null,
+                        false 
+                ),
+                array(
+                        true,
+                        $inputs,
+                        null,
+                        null,
+                        false 
+                ),
+                array(
+                        false,
+                        $inputs,
+                        7,
+                        null,
+                        false 
+                ),
+                array(
+                        true,
+                        $inputs,
+                        7,
+                        null,
+                        false 
+                ),
+                array(
+                        false,
+                        $inputs,
+                        null,
+                        '',
+                        false 
+                ),
+                array(
+                        true,
+                        $inputs,
+                        null,
+                        '',
+                        false 
+                ),
+                array(
+                        false,
+                        $inputs,
+                        7,
+                        '',
+                        true,
+                        $str 
+                ),
+                array(
+                        true,
+                        $inputs,
+                        7,
+                        'okay',
+                        true,
+                        $str 
+                ) 
+        );
+    }
+
+    /**
+     * Exercise the Challenge constructor for valid and invalid arguments. @dataProvider challengeFixture
      * 
      * @param string $name the challenge name to test with
      * @param string $description the challenge's description to test with
      * @param string $className the challenge class name to test with
      * @param Method $method the challenge's method to test with
+     * @param array $testCases the challenge's test cases
      * @param boolean $success whether construction should succeed
      * @param string $str the string representation (if successful)
      */
-    public function testChallengeConstruction($name, $description, $className, Method $method, $success, $str = null)
+    public function testChallengeConstruction($name, $description, $className, Method $method, $testCases, $success, $str = null)
     {
         try {
-            $c = new Challenge($name, $description, $className, $method);
+            $c = new Challenge($name, $description, $className, $method, $testCases);
             $this->assertTrue($success, 'Construction succeeded when it should have failed');
             $this->assertEquals($name, $c->name(), 'mis-matched name');
             $this->assertEquals($description, $c->description(), 'mis-matched description');
             $this->assertEquals($className, $c->className(), 'mis-matched class name');
             $this->assertEquals($method->__toString(), $c->method()->__toString(), 'mis-matched method representations');
+            $actualTestCases = $c->testCases();
+            $count = count($testCases);
+            $this->assertCount($count, $actualTestCases);
+            for($i = 0; $i < $count; $i++) {
+                $this->assertEquals($testCases [$i]->__toString(), $actualTestCases [$i]->__toString(), 'mismatched test case: ' . $i);
+            }
             $this->assertEquals($str, $c->__toString(), 'mis-matched string representations');
         }
         catch (InvalidArgumentException $e) {
@@ -385,6 +514,20 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
         ), array(
                 $c2 
         ));
+        $tc1 = new TestCase(true, array(
+                1,
+                2,
+                3 
+        ), 7);
+        $tc2 = new TestCase(true, array(
+                1,
+                2,
+                4 
+        ), 8);
+        $tc = array(
+                $tc1,
+                $tc2 
+        );
         
         return array(
                 array(
@@ -392,6 +535,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         null,
                         null,
                         $m,
+                        null,
                         false 
                 ),
                 array(
@@ -399,6 +543,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         null,
                         null,
                         $m,
+                        null,
                         false 
                 ),
                 array(
@@ -406,6 +551,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         $d,
                         null,
                         $m,
+                        null,
                         false 
                 ),
                 array(
@@ -413,6 +559,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         null,
                         'BoggleTest',
                         $m,
+                        null,
                         false 
                 ),
                 array(
@@ -420,6 +567,15 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         null,
                         null,
                         $m,
+                        null,
+                        false 
+                ),
+                array(
+                        null,
+                        null,
+                        null,
+                        $m,
+                        $tc,
                         false 
                 ),
                 array(
@@ -427,6 +583,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         $d,
                         null,
                         $m,
+                        null,
                         false 
                 ),
                 array(
@@ -434,6 +591,7 @@ class ModelUnitTest extends PHPUnit_Framework_TestCase
                         $d,
                         'BoggleTest',
                         $m,
+                        $tc,
                         true,
                         'Boggle: BoggleTest->test-m(int test-p) : float' 
                 ) 

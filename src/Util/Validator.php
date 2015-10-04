@@ -26,17 +26,35 @@ class Validator
     }
 
     /**
+     * Validates that the given parameter is a boolean.
+     * 
+     * @param mixes $param the parameter to validate
+     * @param string $name the name of the parameter
+     * @throws InvalidArgumentException
+     */
+    public static function validateBoolean($param, $name)
+    {
+        if (!is_bool($param)) {
+            throw new InvalidArgumentException($name . ' is not a boolean');
+        }
+    }
+
+    /**
      * Validates the given string parameter is not empty.
      * 
      * @param string $param the parameter to validate
      * @param string $name the name of the parameter
+     * @param string $mayBeEmpty whether the string may be empty (default: no)
      * @throws InvalidArgumentException
      */
-    public static function validateString($param, $name)
+    public static function validateString($param, $name, $mayBeEmpty = false)
     {
         self::validateNotNull($param, $name);
-        if (!is_string($param) || empty($param)) {
-            throw new InvalidArgumentException($name . ' is not a non-empty string: ' . $param);
+        if (!is_string($param)) {
+            throw new InvalidArgumentException($name . ' is not a string: ' . $param);
+        }
+        if (!$mayBeEmpty && empty($param)) {
+            throw new InvalidArgumentException($name . ' is an empty string: ' . $param);
         }
     }
 

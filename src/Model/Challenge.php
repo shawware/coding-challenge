@@ -27,6 +27,12 @@ class Challenge extends AbstractEntity
      * @var Method
      */
     private $method;
+    /**
+     * This challenge's test cases.
+     * 
+     * @var array:TestCase
+     */
+    private $testCases;
 
     /**
      * Constructs a new challenge based on the given information.
@@ -35,17 +41,20 @@ class Challenge extends AbstractEntity
      * @param string $description
      * @param string $className
      * @param Method $method
+     * @param array $testCases
      */
-    public function __construct($name, $description, $className, Method $method)
+    public function __construct($name, $description, $className, Method $method, $testCases)
     {
         parent::__construct($name);
         Validator::validateString($description, 'description');
         Validator::validateString($className, 'class name');
+        Validator::validateTypedArray($testCases, 'Shawware\CodingChallenge\Model\TestCase', 'test cases');
         
         $this->name = $name;
         $this->description = $description;
         $this->className = $className;
         $this->method = $method;
+        $this->testCases = $testCases;
     }
 
     /**
@@ -76,6 +85,16 @@ class Challenge extends AbstractEntity
     public function method()
     {
         return $this->method;
+    }
+
+    /**
+     * This challenge's test cases.
+     * 
+     * @return array:TestCase
+     */
+    public function testCases()
+    {
+        return $this->testCases;
     }
 
     /**
